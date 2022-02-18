@@ -19,22 +19,6 @@ inputs:
     description: If true, it will not fail even if the current branch's coverage is lower than the default branch's coverage.
     default: "false"
     required: false
-  badge-enabled:
-    description: Whether or not a badge will be generated and stored.
-    default: "true"
-    required: false
-  badge-filename:
-    description: Name of the json file containing badge informations stored in the repo wiki.
-    default: coverage-diff-badge.json
-    required: false
-  badge-threshold-green:
-    description: If the coverage percentage is above or equal to this value, the badge will be green.
-    default: "100"
-    required: false
-  badge-threshold-orange:
-    description: If the coverage percentage is not green and above or equal to this value, the badge will be orange. Otherwise it will be red.
-    default: "70"
-    required: false
 runs:
   using: node16
   main: dist/index.js

@@ -9128,6 +9128,7 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const { readFile } = __nccwpck_require__(3292);
+const { existsSync } = __nccwpck_require__(7147);
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 
@@ -9140,15 +9141,22 @@ async function run() {
   const githubToken = core.getInput("github-token");
   const baseSummaryFilename = core.getInput("base-summary-filename");
   const coverageFilename = core.getInput("coverage-filename");
-  const badgeThresholdOrange = core.getInput("badge-threshold-orange");
 
   const octokit = github.getOctokit(githubToken);
 
   const issue_number = context?.payload?.pull_request?.number;
   const allowedToFail = core.getBooleanInput("allowed-to-fail");
 
-  const base = JSON.parse(await readFile(baseSummaryFilename, "utf8"));
-  const head = JSON.parse(await readFile(coverageFilename, "utf8"));
+  if (!existsSync(baseSummaryFilename)) {
+    core.info(`No base json-summary found at ${coverageFilename}`);
+    return;
+  }
+  if (!existsSync(coverageFilename)) {
+    core.info(`No coverage json-summary found at ${coverageFilename}`);
+    return;
+  }
+  const base = JSON.parse(await readFile(baseSummaryFilename, "utf8")) || {};
+  const head = JSON.parse(await readFile(coverageFilename, "utf8")) || {};
 
   const diff = computeDiff(base, head, { allowedToFail });
 
